@@ -1,2 +1,2 @@
 # flask-mongodb-auth
-API authentication using flask and mongodb, using flask-jwt-etended
+API authentication using flask and mongodb, using flask-jwt-extended
