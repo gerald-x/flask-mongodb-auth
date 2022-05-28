@@ -138,8 +138,7 @@ def login():
 
     user = User.objects(email=email).first()
 
-
-    if not email:
+    if not user:
         return jsonify({"message": "user does not exist"}), 401
 
     
