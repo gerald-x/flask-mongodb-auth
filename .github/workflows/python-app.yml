@@ -33,7 +33,7 @@ jobs:
     - name: Add remote origin
       if: github.ref == 'refs/head/master' && job.status == 'success'
       run: |
-        git remote add https://git.heroku.com/flask-mongodb-auth.git
+        git remote add heroku https://git.heroku.com/flask-mongodb-auth.git
     - name: Deploy to Heroku
       run: |
         git push heroku HEAD:master -f
