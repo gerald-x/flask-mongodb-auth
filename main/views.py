@@ -23,7 +23,16 @@ def template_id(template_id):
     """
     
     if request.method == "GET":
-        template = Templates.objects.get_or_404(id=template_id).first()
+        template = Templates.objects(id=template_id).first()
+
+        if not template:
+            return jsonify(message="Template doesn't exist"), 404
+
+        identity = get_jwt_identity()
+
+        if template.user.email != identity:
+            return jsonify(message="You have are not the owner of this template. Therefore you have no access"), 403
+
         template_dump = TemplateSchema().dump(template)
         print(template.user.email)
         return jsonify(template_dump)
@@ -33,7 +42,7 @@ def template_id(template_id):
         identity = get_jwt_identity()
 
         if template.user.email != identity:
-            return jsonify(message="You are not the author of this template therefore you can not edit it")
+            return jsonify(message="You are not the author of this template therefore you can not edit it"), 403
 
         template.name = request.json.get("template_name")
         template.subject = request.json.get("subject")
@@ -48,7 +57,7 @@ def template_id(template_id):
         identity = get_jwt_identity()
 
         if template.user.email != identity:
-            return jsonify(message="You are not the author of this template therefore you don't have such permission")
+            return jsonify(message="You are not the author of this template therefore you don't have such permission"), 403
 
         template.delete()
 
