@@ -50,7 +50,12 @@ def template_id(template_id):
 
         template.save()
 
-        return jsonify(message="Successful")
+        update_template = Templates.objects(id=template_id).first()
+        return jsonify({
+            "name": update_template.name,
+            "subject": update_template.subject,
+            "body": update_template.body
+        })
 
     else:
         template = Templates.objects(id=template_id).first()
@@ -80,8 +85,9 @@ def template():
     """
 
     if request.method == "GET":
-        # query all templates
-        all_templates = Templates.objects
+        user_identity = get_jwt_identity()
+        user = User.objects(email=user_identity).first()
+        all_templates = Templates.objects(user=user.id)
         template_dump = TemplateSchema(many=True).dump(all_templates)
         return jsonify(template_dump)
 
@@ -130,7 +136,7 @@ def register():
     user.save()
 
     access_token = create_access_token(identity=email)
-    return jsonify(access_token=access_token)
+    return jsonify(message="registration successful")
 
 
 
