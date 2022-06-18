@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 from flask import *
 from main import app
 from .models import User, Templates, TemplateSchema
@@ -124,16 +125,20 @@ def register():
     email = request.json.get("email")
     password = request.json.get("password")
 
-
-    email_check = User.objects(email=email).first()
+    try:
+        email_check = User.objects(email=email).first()
+    except:
+        return jsonify(message="Check your credentials")
 
 
     if email_check:
         return jsonify({"message": "email already exists"}), 401
 
-
-    user = User(first_name=first_name, email=email, last_name=last_name, password=generate_password_hash(password))
-    user.save()
+    try:
+        user = User(first_name=first_name, email=email, last_name=last_name, password=generate_password_hash(password))
+        user.save()
+    except:
+        return jsonify(message="Check your credentials")
 
     access_token = create_access_token(identity=email)
     return jsonify(message="registration successful")
