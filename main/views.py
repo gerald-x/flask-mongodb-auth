@@ -1,4 +1,3 @@
-from django.forms import ValidationError
 from flask import *
 from main import app
 from .models import User, Templates, TemplateSchema
